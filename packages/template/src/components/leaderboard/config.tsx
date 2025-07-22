@@ -1,6 +1,6 @@
-import { LeaderboardTemplate } from "./leaderboard-template";
-import { LeaderboardTemplateCompact } from "./leaderboard-template-compact";
-import { LeaderboardTemplateGaming } from "./leaderboard-template-gaming";
+import { Leaderboard as gamingTemplate } from "./gaming";
+import { Leaderboard as compactTemplate } from "./compact";
+import { Leaderboard as defaultTemplate } from "./default";
 
 export interface LeaderboardTemplateConfig {
   id: string;
@@ -19,7 +19,7 @@ export const LEADERBOARD_TEMPLATES: Record<string, LeaderboardTemplateConfig> = 
     id: 'default',
     name: 'Default',
     description: 'A clean, professional leaderboard template with balanced spacing and modern design',
-    component: LeaderboardTemplate,
+    component: defaultTemplate,
     maxWidth: 'max-w-2xl',
     visualStyle: 'clean',
     bestFor: ['Business applications', 'Professional websites', 'General purpose'],
@@ -35,7 +35,7 @@ export const LEADERBOARD_TEMPLATES: Record<string, LeaderboardTemplateConfig> = 
     id: 'compact',
     name: 'Compact',
     description: 'A space-efficient template that displays more entries in a condensed format',
-    component: LeaderboardTemplateCompact,
+    component: compactTemplate,
     maxWidth: 'max-w-4xl',
     visualStyle: 'compact',
     bestFor: ['High-traffic leaderboards', 'Mobile-first applications', 'Space-constrained layouts'],
@@ -51,7 +51,7 @@ export const LEADERBOARD_TEMPLATES: Record<string, LeaderboardTemplateConfig> = 
     id: 'gaming',
     name: 'Gaming',
     description: 'A vibrant, gaming-themed template with dark colors and glowing effects',
-    component: LeaderboardTemplateGaming,
+    component: gamingTemplate,
     maxWidth: 'max-w-3xl',
     visualStyle: 'gaming',
     bestFor: ['Gaming applications', 'Esports platforms', 'Youth-oriented content'],

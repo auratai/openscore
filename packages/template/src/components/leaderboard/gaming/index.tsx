@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@openscore/ui";
-import { Avatar } from "../common/avatar";
-import { ScoreDisplay } from "../common/score-display";
-import { RankBadge } from "../common/rank-badge";
-import type { LeaderboardTemplateProps, LeaderboardEntry } from "../../types";
-import { sortByScore, limitEntries, mergeClasses } from "../../utils";
+import { Avatar } from "../../common/avatar";
+import { ScoreDisplay } from "../../common/score-display";
+import { RankBadge } from "../../common/rank-badge";
+import type { LeaderboardTemplateProps, LeaderboardEntry } from "../../../types";
+import { sortByScore, limitEntries, mergeClasses } from "../../../utils";
 
-export const LeaderboardTemplateGaming: React.FC<LeaderboardTemplateProps> = ({
+export const Leaderboard: React.FC<LeaderboardTemplateProps> = ({
   entries,
   title = "Leaderboard",
   maxEntries,
