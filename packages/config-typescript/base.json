@@ -14,7 +14,9 @@
     "noUnusedParameters": false,
     "preserveWatchOutput": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "lib": ["ES2015", "ES2016", "ES2017", "ES2018", "ES2019", "ES2020", "ES2021", "ES2022", "DOM", "DOM.Iterable"],
+    "target": "ES2015"
   },
   "exclude": ["node_modules"]
 }

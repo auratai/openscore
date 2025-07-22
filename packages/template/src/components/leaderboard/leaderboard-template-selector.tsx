@@ -1,0 +1,126 @@
+import * as React from "react";
+import { LeaderboardTemplate } from "./leaderboard-template";
+import { LeaderboardTemplateCompact } from "./leaderboard-template-compact";
+import { LeaderboardTemplateGaming } from "./leaderboard-template-gaming";
+import type { LeaderboardTemplateProps } from "../../types";
+
+interface LeaderboardData {
+  id: string;
+  viewId: string;
+  editId: string;
+  title: string;
+  subheading?: string;
+  description?: string;
+  url?: string;
+  note?: string;
+  templateType?: string;
+  startDate?: string;
+  endDate?: string;
+  columns: any[];
+  sortByColumn?: string;
+  entries: any[];
+}
+
+interface LeaderboardTemplateSelectorProps extends Omit<LeaderboardTemplateProps, 'title'> {
+  data: LeaderboardData | null;
+  loading?: boolean;
+  error?: string | null;
+  fallbackTemplate?: 'default' | 'compact' | 'gaming';
+}
+
+export const LeaderboardTemplateSelector: React.FC<LeaderboardTemplateSelectorProps> = ({
+  data,
+  loading = false,
+  error = null,
+  fallbackTemplate = 'default',
+  entries,
+  ...props
+}) => {
+  // Handle loading state
+  if (loading) {
+    return (
+      <div className="w-full max-w-2xl mx-auto p-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded mb-6"></div>
+          <div className="space-y-3">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="h-16 bg-gray-200 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle error state
+  if (error) {
+    return (
+      <div className="w-full max-w-2xl mx-auto p-8 text-center">
+        <div className="text-red-500 mb-4">
+          <div className="text-4xl mb-2">⚠️</div>
+          <h2 className="text-xl font-bold mb-2">Error Loading Leaderboard</h2>
+          <p className="text-gray-600">{error}</p>
+        </div>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
+  // Handle no data state
+  if (!data) {
+    return (
+      <div className="w-full max-w-2xl mx-auto p-8 text-center">
+        <div className="text-gray-500">
+          <div className="text-4xl mb-2">📊</div>
+          <h2 className="text-xl font-bold mb-2">No Leaderboard Data</h2>
+          <p>Unable to load leaderboard information.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Determine which template to use based on templateType
+  const getTemplateType = (): 'default' | 'compact' | 'gaming' => {
+    if (!data.templateType) {
+      return fallbackTemplate;
+    }
+
+    const templateType = data.templateType.toLowerCase();
+    
+    if (templateType.includes('gaming') || templateType.includes('game')) {
+      return 'gaming';
+    }
+    
+    if (templateType.includes('compact') || templateType.includes('minimal')) {
+      return 'compact';
+    }
+    
+    return 'default';
+  };
+
+  const templateType = getTemplateType();
+  const title = data.title || "Leaderboard";
+
+  // Common props for all templates
+  const commonProps = {
+    entries,
+    title,
+    ...props
+  };
+
+  // Render the appropriate template
+  switch (templateType) {
+    case 'gaming':
+      return <LeaderboardTemplateGaming {...commonProps} />;
+    case 'compact':
+      return <LeaderboardTemplateCompact {...commonProps} />;
+    case 'default':
+    default:
+      return <LeaderboardTemplate {...commonProps} />;
+  }
+}; 

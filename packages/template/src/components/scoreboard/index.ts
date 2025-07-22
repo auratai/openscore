@@ -1,0 +1,1 @@
+// Scoreboard templates will be added here in the future 

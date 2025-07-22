@@ -17,3 +17,30 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
 }
+
+model Leaderboard {
+  id          String   @id @default(cuid())
+  viewId      String   @unique @default(cuid())  // Public ID for viewing
+  editId      String   @unique @default(cuid())  // Private ID for editing
+  title       String
+  subheading  String?
+  description String?
+  url         String?
+  note        String?
+  templateType String?  // e.g., "gaming", "sports", "academic", "custom"
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // JSON configuration for columns (e.g., [{"name": "score", "type": "number", "sortable": true}])
+  columns     Json     @default("[]")
+  
+  // Column name to use for ranking/sorting entries
+  sortByColumn String?
+  
+  // JSON array of entries with ranks and data (e.g., [{"rank": 1, "playerName": "John", "data": {"score": 100}}])
+  entries     Json     @default("[]")
+  
+  @@map("leaderboards")
+}
