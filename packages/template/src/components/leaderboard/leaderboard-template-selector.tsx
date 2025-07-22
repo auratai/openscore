@@ -1,7 +1,5 @@
 import * as React from "react";
-import { LeaderboardTemplate } from "./leaderboard-template";
-import { LeaderboardTemplateCompact } from "./leaderboard-template-compact";
-import { LeaderboardTemplateGaming } from "./leaderboard-template-gaming";
+import { LEADERBOARD_TEMPLATES, getTemplateById, type LeaderboardTemplateConfig } from "./config";
 import type { LeaderboardTemplateProps } from "../../types";
 
 interface LeaderboardData {
@@ -25,7 +23,7 @@ interface LeaderboardTemplateSelectorProps extends Omit<LeaderboardTemplateProps
   data: LeaderboardData | null;
   loading?: boolean;
   error?: string | null;
-  templateType?: 'default' | 'compact' | 'gaming';
+  templateType?: keyof typeof LEADERBOARD_TEMPLATES;
 }
 
 export const LeaderboardTemplateSelector: React.FC<LeaderboardTemplateSelectorProps> = ({
@@ -86,6 +84,22 @@ export const LeaderboardTemplateSelector: React.FC<LeaderboardTemplateSelectorPr
 
   const title = data.title || "Leaderboard";
 
+  // Get the template configuration
+  const templateConfig = getTemplateById(templateType);
+  
+  if (!templateConfig) {
+    console.warn(`Template type "${templateType}" not found, falling back to default`);
+    const defaultConfig = getTemplateById('default');
+    if (!defaultConfig) {
+      throw new Error('Default template not found');
+    }
+    return React.createElement(defaultConfig.component, {
+      entries,
+      title,
+      ...props
+    });
+  }
+
   // Common props for all templates
   const commonProps = {
     entries,
@@ -93,14 +107,6 @@ export const LeaderboardTemplateSelector: React.FC<LeaderboardTemplateSelectorPr
     ...props
   };
 
-  // Render the appropriate template
-  switch (templateType) {
-    case 'gaming':
-      return <LeaderboardTemplateGaming {...commonProps} />;
-    case 'compact':
-      return <LeaderboardTemplateCompact {...commonProps} />;
-    case 'default':
-    default:
-      return <LeaderboardTemplate {...commonProps} />;
-  }
+  // Render the template using the configuration
+  return React.createElement(templateConfig.component, commonProps);
 }; 

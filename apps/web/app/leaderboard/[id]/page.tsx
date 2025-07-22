@@ -1,6 +1,6 @@
 "use client";
 
-import { useLeaderboard, LeaderboardTemplateSelector } from "@openscore/template";
+import { useLeaderboard, LeaderboardTemplateSelector, LEADERBOARD_TEMPLATES, getAllTemplates } from "@openscore/template";
 import { useSearchParams, useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -11,7 +11,7 @@ export default function LeaderboardPage() {
   const name = searchParams.get('name');
   
   // State for template type selection
-  const [selectedTemplateType, setSelectedTemplateType] = useState<'default' | 'compact' | 'gaming'>('default');
+  const [selectedTemplateType, setSelectedTemplateType] = useState<keyof typeof LEADERBOARD_TEMPLATES>('default');
 
   const {
     data,
@@ -59,6 +59,8 @@ export default function LeaderboardPage() {
     );
   }
 
+  const availableTemplates = getAllTemplates();
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
 
@@ -71,17 +73,21 @@ export default function LeaderboardPage() {
             <select
               id="template-select"
               value={selectedTemplateType}
-              onChange={(e) => setSelectedTemplateType(e.target.value as 'default' | 'compact' | 'gaming')}
+              onChange={(e) => setSelectedTemplateType(e.target.value as keyof typeof LEADERBOARD_TEMPLATES)}
               className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
-              <option value="default">Default</option>
-              <option value="compact">Compact</option>
-              <option value="gaming">Gaming</option>
+              {availableTemplates.map((template) => (
+                <option key={template.id} value={template.id}>
+                  {template.name}
+                </option>
+              ))}
             </select>
+            {/* Template description */}
+            <div className="mt-2 text-xs text-gray-500 max-w-xs">
+              {LEADERBOARD_TEMPLATES[selectedTemplateType]?.description}
+            </div>
           </div>
         </div>
-
-
 
         {/* Leaderboard Content */}
         <div className="flex justify-center">
