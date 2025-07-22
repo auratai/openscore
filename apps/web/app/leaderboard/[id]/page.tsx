@@ -61,7 +61,7 @@ export default function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
+
         {/* Template Type Selector */}
         <div className="flex justify-center mb-6">
           <div className="bg-white rounded-lg shadow-sm border p-4">
@@ -81,18 +81,7 @@ export default function LeaderboardPage() {
           </div>
         </div>
 
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {data?.title || name || "Leaderboard"}
-          </h1>
-          {data?.subheading && (
-            <p className="text-lg text-gray-600 mb-4">{data.subheading}</p>
-          )}
-          {data?.description && (
-            <p className="text-gray-500 max-w-2xl mx-auto">{data.description}</p>
-          )}
-        </div>
+
 
         {/* Leaderboard Content */}
         <div className="flex justify-center">
@@ -109,37 +98,6 @@ export default function LeaderboardPage() {
           />
         </div>
 
-        {/* Additional Info */}
-        {data && (
-          <div className="mt-8 text-center text-sm text-gray-500">
-            <p>Leaderboard ID: {data.viewId}</p>
-            {data.note && <p className="mt-2 italic">"{data.note}"</p>}
-            {data.startDate && (
-              <p className="mt-1">
-                Active from {new Date(data.startDate).toLocaleDateString()}
-                {data.endDate && ` to ${new Date(data.endDate).toLocaleDateString()}`}
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Debug Info (remove in production) */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-8 p-4 bg-gray-100 rounded-lg">
-            <h3 className="font-bold mb-2">Debug Info:</h3>
-            <p>Loading: {loading.toString()}</p>
-            <p>Error: {error || 'None'}</p>
-            <p>Entries Count: {entries.length}</p>
-            <p>Template Type: {data?.templateType || 'default'}</p>
-            <button 
-              onClick={refresh}
-              className="mt-2 px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-            >
-              Refresh Data
-            </button>
-          </div>
-        )}
-      </div>
     </div>
   );
 }
