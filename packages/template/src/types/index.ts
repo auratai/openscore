@@ -14,13 +14,29 @@ export interface LeaderboardEntry {
   metadata?: Record<string, any>;
 }
 
-export interface LeaderboardTemplateProps extends BaseTemplateProps {
+export interface LeaderboardData {
+  id: string;
+  viewId: string;
+  editId: string;
+  title: string;
+  subheading?: string;
+  description?: string;
+  url?: string;
+  note?: string;
+  templateType?: string;
+  startDate?: string;
+  endDate?: string;
+  columns: any[];
+  sortByColumn?: string;
   entries: LeaderboardEntry[];
-  title?: string;
   maxEntries?: number;
   showRank?: boolean;
   showScore?: boolean;
   showAvatar?: boolean;
+}
+
+export interface LeaderboardTemplateProps extends BaseTemplateProps {
+  data: LeaderboardData;
 }
 
 // Scoreboard specific types

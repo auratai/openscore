@@ -61,6 +61,16 @@ export default function LeaderboardPage() {
 
   const availableTemplates = getAllTemplates();
 
+  // Prepare data object with configuration properties
+  const leaderboardData = data ? {
+    ...data,
+    entries: entries || [],
+    maxEntries: 50,
+    showRank: true,
+    showScore: true,
+    showAvatar: true
+  } : null;
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
 
@@ -92,14 +102,9 @@ export default function LeaderboardPage() {
         {/* Leaderboard Content */}
         <div className="flex justify-center">
           <LeaderboardTemplateSelector
-            data={data}
+            data={leaderboardData}
             loading={loading}
             error={error}
-            entries={entries}
-            maxEntries={50}
-            showRank={true}
-            showScore={true}
-            showAvatar={true}
             templateType={selectedTemplateType}
           />
         </div>

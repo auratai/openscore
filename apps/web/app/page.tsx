@@ -3,7 +3,7 @@ import { Button } from "@openscore/ui/components/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@openscore/ui/components/card";
 import { Input } from "@openscore/ui/components/input";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@openscore/ui/components/dialog";
-import { TemplateDemo } from "./template-demo";
+
 
 export default async function IndexPage() {
   const users = await prisma.user.findMany();
@@ -108,9 +108,6 @@ export default async function IndexPage() {
         </Dialog>
       </div>
 
-      <div className="space-y-4">
-        <TemplateDemo />
-      </div>
     </div>
   );
 }

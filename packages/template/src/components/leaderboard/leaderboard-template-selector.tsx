@@ -1,29 +1,14 @@
 import * as React from "react";
 import { LEADERBOARD_TEMPLATES, getTemplateById, type LeaderboardTemplateConfig } from "./config";
-import type { LeaderboardTemplateProps } from "../../types";
+import type { LeaderboardTemplateProps, LeaderboardData } from "../../types";
 
-interface LeaderboardData {
-  id: string;
-  viewId: string;
-  editId: string;
-  title: string;
-  subheading?: string;
-  description?: string;
-  url?: string;
-  note?: string;
-  templateType?: string;
-  startDate?: string;
-  endDate?: string;
-  columns: any[];
-  sortByColumn?: string;
-  entries: any[];
-}
-
-interface LeaderboardTemplateSelectorProps extends Omit<LeaderboardTemplateProps, 'title'> {
+interface LeaderboardTemplateSelectorProps {
   data: LeaderboardData | null;
   loading?: boolean;
   error?: string | null;
   templateType?: keyof typeof LEADERBOARD_TEMPLATES;
+  className?: string;
+  children?: React.ReactNode;
 }
 
 export const LeaderboardTemplateSelector: React.FC<LeaderboardTemplateSelectorProps> = ({
@@ -31,8 +16,8 @@ export const LeaderboardTemplateSelector: React.FC<LeaderboardTemplateSelectorPr
   loading = false,
   error = null,
   templateType = 'default',
-  entries,
-  ...props
+  className,
+  children
 }) => {
   // Handle loading state
   if (loading) {
@@ -82,8 +67,6 @@ export const LeaderboardTemplateSelector: React.FC<LeaderboardTemplateSelectorPr
     );
   }
 
-  const title = data.title || "Leaderboard";
-
   // Get the template configuration
   const templateConfig = getTemplateById(templateType);
   
@@ -94,19 +77,17 @@ export const LeaderboardTemplateSelector: React.FC<LeaderboardTemplateSelectorPr
       throw new Error('Default template not found');
     }
     return React.createElement(defaultConfig.component, {
-      entries,
-      title,
-      ...props
+      data,
+      className
     });
   }
 
-  // Common props for all templates
-  const commonProps = {
-    entries,
-    title,
-    ...props
+  // Pass the whole data object to the template
+  const templateProps = {
+    data,
+    className
   };
 
   // Render the template using the configuration
-  return React.createElement(templateConfig.component, commonProps);
+  return React.createElement(templateConfig.component, templateProps);
 }; 

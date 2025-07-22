@@ -11,7 +11,7 @@
   "dependencies": {
     "@openscore/ui": "workspace:*",
     "@openscore/template": "workspace:*",
-    "@openscore/database": "workspace:*",
+    "@repo/database": "workspace:*",
     "next": "^14.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -19,7 +19,6 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^14.1.1",
-    "@repo/database": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^20.11.24",

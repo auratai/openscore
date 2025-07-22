@@ -7,14 +7,11 @@ import type { LeaderboardTemplateProps, LeaderboardEntry } from "../../../types"
 import { sortByScore, limitEntries, mergeClasses } from "../../../utils";
 
 export const Leaderboard: React.FC<LeaderboardTemplateProps> = ({
-  entries,
-  title = "Leaderboard",
-  maxEntries,
-  showRank = true,
-  showScore = true,
-  showAvatar = true,
+  data,
   className
 }) => {
+  const { entries = [], title = "Leaderboard", maxEntries, showRank = true, showScore = true, showAvatar = true } = data;
+  
   const sortedEntries = sortByScore(entries);
   const limitedEntries = limitEntries(sortedEntries, maxEntries);
 

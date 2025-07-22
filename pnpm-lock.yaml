@@ -33,6 +33,9 @@ importers:
       '@openscore/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@repo/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       next:
         specifier: ^14.1.1
         version: 14.2.30(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -49,9 +52,6 @@ importers:
       '@next/eslint-plugin-next':
         specifier: ^14.1.1
         version: 14.2.30
-      '@repo/database':
-        specifier: workspace:*
-        version: link:../../packages/database
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../packages/config-eslint
@@ -121,6 +121,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../config-typescript
+      '@types/node':
+        specifier: ^20.11.24
+        version: 20.19.9
       eslint:
         specifier: ^8.57.0
         version: 8.57.1
@@ -164,9 +167,21 @@ importers:
       '@types/react-dom':
         specifier: ^18.0.0
         version: 18.3.7(@types/react@18.3.23)
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^7.1.0
+        version: 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.5.4))(eslint@8.57.1)(typescript@5.5.4)
+      '@typescript-eslint/parser':
+        specifier: ^7.1.0
+        version: 7.18.0(eslint@8.57.1)(typescript@5.5.4)
       eslint:
         specifier: ^8.0.0
         version: 8.57.1
+      eslint-plugin-react:
+        specifier: ^7.33.2
+        version: 7.37.5(eslint@8.57.1)
+      eslint-plugin-react-hooks:
+        specifier: ^4.6.0
+        version: 4.6.2(eslint@8.57.1)
       typescript:
         specifier: ^5.0.0
         version: 5.5.4
