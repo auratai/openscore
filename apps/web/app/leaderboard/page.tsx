@@ -1,39 +1,36 @@
 "use client";
 
-import { useLeaderboard, LeaderboardTemplateSelector } from "@openscore/template";
-import { useSearchParams } from "next/navigation";
+import { useAllLeaderboards } from "@openscore/template";
+import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "@openscore/ui";
 
 export default function LeaderboardPage() {
-  const searchParams = useSearchParams();
-  const leaderboardId = searchParams.get('id');
-  const name = searchParams.get('name');
+  const { leaderboards, loading, error, refresh } = useAllLeaderboards();
 
-  const {
-    data,
-    entries,
-    loading,
-    error,
-    refresh,
-    addEntry,
-    updateEntry,
-    removeEntry
-  } = useLeaderboard({
-    leaderboardId: leaderboardId || undefined,
-    autoRefresh: true,
-    refreshInterval: 30000 // Refresh every 30 seconds
-  });
-
-  // Handle missing leaderboard ID
-  if (!leaderboardId) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="text-6xl mb-4">🔍</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Leaderboard Not Found</h1>
-          <p className="text-gray-600 mb-4">No leaderboard ID provided in the URL.</p>
-          <p className="text-sm text-gray-500">
-            Please provide a valid leaderboard ID in the URL: /leaderboard?id=YOUR_ID
-          </p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading leaderboards...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Leaderboards</h1>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button 
+            onClick={refresh}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     );
@@ -44,62 +41,80 @@ export default function LeaderboardPage() {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {data?.title || name || "Leaderboard"}
-          </h1>
-          {data?.subheading && (
-            <p className="text-lg text-gray-600 mb-4">{data.subheading}</p>
-          )}
-          {data?.description && (
-            <p className="text-gray-500 max-w-2xl mx-auto">{data.description}</p>
-          )}
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">All Leaderboards</h1>
+          <p className="text-lg text-gray-600">
+            Browse and explore all available leaderboards
+          </p>
         </div>
 
-        {/* Leaderboard Content */}
-        <div className="flex justify-center">
-          <LeaderboardTemplateSelector
-            data={data}
-            loading={loading}
-            error={error}
-            entries={entries}
-            maxEntries={50}
-            showRank={true}
-            showScore={true}
-            showAvatar={true}
-            fallbackTemplate="default"
-          />
-        </div>
+        {/* Leaderboards Grid */}
+        {leaderboards.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">📊</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">No Leaderboards Found</h2>
+            <p className="text-gray-600">There are no leaderboards available at the moment.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {leaderboards.map((leaderboard) => (
+              <Link 
+                key={leaderboard.id} 
+                href={`/leaderboard/${leaderboard.viewId}`}
+                className="block group"
+              >
+                <Card className="h-full transition-all duration-200 hover:shadow-lg hover:scale-105 group-hover:border-blue-300">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-semibold group-hover:text-blue-600 transition-colors">
+                      {leaderboard.title}
+                    </CardTitle>
+                    {leaderboard.subheading && (
+                      <p className="text-sm text-gray-600">{leaderboard.subheading}</p>
+                    )}
+                  </CardHeader>
+                  <CardContent>
+                    {leaderboard.description && (
+                      <p className="text-sm text-gray-500 mb-4 line-clamp-2">
+                        {leaderboard.description}
+                      </p>
+                    )}
+                    
+                    <div className="flex items-center justify-between text-sm text-gray-600">
+                      <div className="flex items-center space-x-2">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {leaderboard.templateType || 'default'}
+                        </span>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          {leaderboard.entryCount} entries
+                        </span>
+                      </div>
+                      
+                      <div className="text-xs text-gray-400">
+                        {new Date(leaderboard.createdAt).toLocaleDateString()}
+                      </div>
+                    </div>
 
-        {/* Additional Info */}
-        {data && (
-          <div className="mt-8 text-center text-sm text-gray-500">
-            <p>Leaderboard ID: {data.viewId}</p>
-            {data.note && <p className="mt-2 italic">"{data.note}"</p>}
-            {data.startDate && (
-              <p className="mt-1">
-                Active from {new Date(data.startDate).toLocaleDateString()}
-                {data.endDate && ` to ${new Date(data.endDate).toLocaleDateString()}`}
-              </p>
-            )}
+                    {leaderboard.startDate && (
+                      <div className="mt-3 text-xs text-gray-500">
+                        <span className="font-medium">Active:</span> {new Date(leaderboard.startDate).toLocaleDateString()}
+                        {leaderboard.endDate && ` - ${new Date(leaderboard.endDate).toLocaleDateString()}`}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
           </div>
         )}
 
-        {/* Debug Info (remove in production) */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-8 p-4 bg-gray-100 rounded-lg">
-            <h3 className="font-bold mb-2">Debug Info:</h3>
-            <p>Loading: {loading.toString()}</p>
-            <p>Error: {error || 'None'}</p>
-            <p>Entries Count: {entries.length}</p>
-            <p>Template Type: {data?.templateType || 'default'}</p>
-            <button 
-              onClick={refresh}
-              className="mt-2 px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-            >
-              Refresh Data
-            </button>
-          </div>
-        )}
+        {/* Refresh Button */}
+        <div className="mt-8 text-center">
+          <button 
+            onClick={refresh}
+            className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            Refresh Leaderboards
+          </button>
+        </div>
       </div>
     </div>
   );

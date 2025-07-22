@@ -25,14 +25,14 @@ interface LeaderboardTemplateSelectorProps extends Omit<LeaderboardTemplateProps
   data: LeaderboardData | null;
   loading?: boolean;
   error?: string | null;
-  fallbackTemplate?: 'default' | 'compact' | 'gaming';
+  templateType?: 'default' | 'compact' | 'gaming';
 }
 
 export const LeaderboardTemplateSelector: React.FC<LeaderboardTemplateSelectorProps> = ({
   data,
   loading = false,
   error = null,
-  fallbackTemplate = 'default',
+  templateType = 'default',
   entries,
   ...props
 }) => {
@@ -84,26 +84,6 @@ export const LeaderboardTemplateSelector: React.FC<LeaderboardTemplateSelectorPr
     );
   }
 
-  // Determine which template to use based on templateType
-  const getTemplateType = (): 'default' | 'compact' | 'gaming' => {
-    if (!data.templateType) {
-      return fallbackTemplate;
-    }
-
-    const templateType = data.templateType.toLowerCase();
-    
-    if (templateType.includes('gaming') || templateType.includes('game')) {
-      return 'gaming';
-    }
-    
-    if (templateType.includes('compact') || templateType.includes('minimal')) {
-      return 'compact';
-    }
-    
-    return 'default';
-  };
-
-  const templateType = getTemplateType();
   const title = data.title || "Leaderboard";
 
   // Common props for all templates

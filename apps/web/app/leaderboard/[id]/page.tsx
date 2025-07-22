@@ -2,12 +2,16 @@
 
 import { useLeaderboard, LeaderboardTemplateSelector } from "@openscore/template";
 import { useSearchParams, useParams } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function LeaderboardPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const leaderboardId = params.id as string;
   const name = searchParams.get('name');
+  
+  // State for template type selection
+  const [selectedTemplateType, setSelectedTemplateType] = useState<'default' | 'compact' | 'gaming'>('default');
 
   const {
     data,
@@ -23,6 +27,21 @@ export default function LeaderboardPage() {
     autoRefresh: true,
     refreshInterval: 30000 // Refresh every 30 seconds
   });
+
+  // Update selected template type when data changes
+  useEffect(() => {
+    if (data?.templateType) {
+      const templateType = data.templateType.toLowerCase();
+      if (templateType.includes('gaming')) {
+        setSelectedTemplateType('gaming');
+      } else if (templateType.includes('compact')) {
+        setSelectedTemplateType('compact');
+      } else {
+        setSelectedTemplateType('default');
+      }
+    }
+  }, [data?.templateType]);
+  
 
   // Handle missing leaderboard ID
   if (!leaderboardId) {
@@ -43,6 +62,25 @@ export default function LeaderboardPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
+        {/* Template Type Selector */}
+        <div className="flex justify-center mb-6">
+          <div className="bg-white rounded-lg shadow-sm border p-4">
+            <label htmlFor="template-select" className="block text-sm font-medium text-gray-700 mb-2">
+              Template Style
+            </label>
+            <select
+              id="template-select"
+              value={selectedTemplateType}
+              onChange={(e) => setSelectedTemplateType(e.target.value as 'default' | 'compact' | 'gaming')}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            >
+              <option value="default">Default</option>
+              <option value="compact">Compact</option>
+              <option value="gaming">Gaming</option>
+            </select>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -67,7 +105,7 @@ export default function LeaderboardPage() {
             showRank={true}
             showScore={true}
             showAvatar={true}
-            fallbackTemplate="default"
+            templateType={selectedTemplateType}
           />
         </div>
 

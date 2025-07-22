@@ -4,6 +4,9 @@ import { LeaderboardEntry, ScoreboardEntry } from "../types";
 // Hook for managing leaderboard entries
 export * from "./useLeaderboard";
 
+// Hook for fetching all leaderboards
+export { default as useAllLeaderboards } from "./useAllLeaderboards";
+
 // Hook for managing scoreboard entries
 export const useScoreboard = (initialEntries: ScoreboardEntry[] = []) => {
   const [entries, setEntries] = useState<ScoreboardEntry[]>(initialEntries);
