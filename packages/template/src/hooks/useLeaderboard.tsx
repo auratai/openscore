@@ -49,7 +49,7 @@ const useLeaderboard = (options: UseLeaderboardOptions = {}): UseLeaderboardRetu
       const hasRankColumn = leaderboardData.columns.some(col => col.name === 'rank');
       if (!hasRankColumn) {
         leaderboardData.columns.unshift({
-          name: 'rank',
+          name: 'u_rank',
           type: 'number',
           sortable: false,
           required: true,
