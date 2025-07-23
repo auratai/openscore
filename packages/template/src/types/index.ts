@@ -7,11 +7,15 @@ export interface BaseTemplateProps {
 // Leaderboard specific types
 export interface LeaderboardEntry {
   id: string;
-  rank: number;
+  [key: string]: any; // Allow any properties for flexible column support
+}
+
+export interface LeaderboardColumn {
   name: string;
-  score: number;
-  avatar?: string;
-  metadata?: Record<string, any>;
+  type: 'text' | 'number' | 'date' | 'boolean' | 'custom';
+  sortable?: boolean;
+  required?: boolean;
+  displayName?: string;
 }
 
 export interface LeaderboardData {
@@ -26,13 +30,9 @@ export interface LeaderboardData {
   templateType?: string;
   startDate?: string;
   endDate?: string;
-  columns: any[];
+  columns: LeaderboardColumn[];
   sortByColumn?: string;
   entries: LeaderboardEntry[];
-  maxEntries?: number;
-  showRank?: boolean;
-  showScore?: boolean;
-  showAvatar?: boolean;
 }
 
 export interface LeaderboardTemplateProps extends BaseTemplateProps {

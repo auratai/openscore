@@ -1,22 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import type { LeaderboardEntry } from "../types";
-
-interface LeaderboardData {
-  id: string;
-  viewId: string;
-  editId: string;
-  title: string;
-  subheading?: string;
-  description?: string;
-  url?: string;
-  note?: string;
-  templateType?: string;
-  startDate?: string;
-  endDate?: string;
-  columns: any[];
-  sortByColumn?: string;
-  entries: any[];
-}
+import type { LeaderboardEntry, LeaderboardData } from "../types";
 
 interface UseLeaderboardOptions {
   leaderboardId?: string;
@@ -26,11 +9,10 @@ interface UseLeaderboardOptions {
 
 interface UseLeaderboardReturn {
   data: LeaderboardData | null;
-  entries: LeaderboardEntry[];
   loading: boolean;
   error: string | null;
   refresh: () => Promise<void>;
-  addEntry: (entry: Omit<LeaderboardEntry, 'id' | 'rank'>) => Promise<void>;
+  addEntry: (entry: Omit<LeaderboardEntry, 'id'>) => Promise<void>;
   updateEntry: (id: string, updates: Partial<LeaderboardEntry>) => Promise<void>;
   removeEntry: (id: string) => Promise<void>;
 }
@@ -39,7 +21,6 @@ const useLeaderboard = (options: UseLeaderboardOptions = {}): UseLeaderboardRetu
   const { leaderboardId, autoRefresh = false, refreshInterval = 30000 } = options;
   
   const [data, setData] = useState<LeaderboardData | null>(null);
-  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -63,19 +44,50 @@ const useLeaderboard = (options: UseLeaderboardOptions = {}): UseLeaderboardRetu
       }
 
       const leaderboardData: LeaderboardData = await response.json();
+      
+      // Add rank column by default if it doesn't exist
+      const hasRankColumn = leaderboardData.columns.some(col => col.name === 'rank');
+      if (!hasRankColumn) {
+        leaderboardData.columns.unshift({
+          name: 'rank',
+          type: 'number',
+          sortable: false,
+          required: true,
+          displayName: 'Rank'
+        });
+      }
+
+      // Sort entries by the specified column and add rank
+      if (leaderboardData.sortByColumn && leaderboardData.entries.length > 0) {
+        const sortColumn = leaderboardData.sortByColumn;
+        
+        // Sort entries by the specified column (descending for numbers, ascending for text)
+        leaderboardData.entries.sort((a, b) => {
+          const aValue = a[sortColumn];
+          const bValue = b[sortColumn];
+          
+          // Handle different data types
+          if (typeof aValue === 'number' && typeof bValue === 'number') {
+            return bValue - aValue; // Descending for numbers
+          }
+          
+          if (aValue instanceof Date && bValue instanceof Date) {
+            return bValue.getTime() - aValue.getTime(); // Descending for dates
+          }
+          
+          // For strings and other types, convert to string and compare
+          const aStr = String(aValue || '');
+          const bStr = String(bValue || '');
+          return aStr.localeCompare(bStr); // Ascending for strings
+        });
+
+        // Add rank to each entry
+        leaderboardData.entries.forEach((entry, index) => {
+          entry.rank = index + 1;
+        });
+      }
+
       setData(leaderboardData);
-
-      // Transform entries to match LeaderboardEntry interface
-      const transformedEntries: LeaderboardEntry[] = leaderboardData.entries.map((entry: any, index: number) => ({
-        id: entry.id || `entry-${index}`,
-        rank: entry.rank || index + 1,
-        name: entry.name || entry.playerName || "Unknown Player",
-        score: entry.score || entry.data?.score || 0,
-        avatar: entry.avatar || entry.data?.avatar,
-        metadata: entry.data || entry.metadata || {}
-      }));
-
-      setEntries(transformedEntries);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
       setError(errorMessage);
@@ -85,7 +97,7 @@ const useLeaderboard = (options: UseLeaderboardOptions = {}): UseLeaderboardRetu
     }
   }, [leaderboardId]);
 
-  const addEntry = useCallback(async (entry: Omit<LeaderboardEntry, 'id' | 'rank'>) => {
+  const addEntry = useCallback(async (entry: Omit<LeaderboardEntry, 'id'>) => {
     if (!leaderboardId) {
       throw new Error("Leaderboard ID is required");
     }
@@ -179,7 +191,6 @@ const useLeaderboard = (options: UseLeaderboardOptions = {}): UseLeaderboardRetu
 
   return {
     data,
-    entries,
     loading,
     error,
     refresh: fetchLeaderboard,

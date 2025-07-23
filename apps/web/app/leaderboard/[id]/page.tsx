@@ -1,6 +1,6 @@
 "use client";
 
-import { useLeaderboard, LeaderboardTemplateSelector, LEADERBOARD_TEMPLATES, getAllTemplates } from "@openscore/template";
+import { useLeaderboard, LeaderboardTemplateSelector, getAllTemplates, isValidTemplateId, LEADERBOARD_TEMPLATES } from "@openscore/template";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -13,7 +13,6 @@ export default function LeaderboardPage() {
 
   const {
     data,
-    entries,
     loading,
     error
   } = useLeaderboard({
@@ -26,12 +25,19 @@ export default function LeaderboardPage() {
   useEffect(() => {
     if (data?.templateType) {
       const templateType = data.templateType.toLowerCase();
-      if (templateType.includes('gaming')) {
-        setSelectedTemplateType('gaming');
-      } else if (templateType.includes('compact')) {
-        setSelectedTemplateType('compact');
+      
+      // Check if the template type is a valid template ID
+      if (isValidTemplateId(templateType)) {
+        setSelectedTemplateType(templateType as keyof typeof LEADERBOARD_TEMPLATES);
       } else {
-        setSelectedTemplateType('default');
+        // Fallback logic for partial matches
+        if (templateType.includes('gaming')) {
+          setSelectedTemplateType('gaming');
+        } else if (templateType.includes('compact')) {
+          setSelectedTemplateType('compact');
+        } else {
+          setSelectedTemplateType('default');
+        }
       }
     }
   }, [data?.templateType]);
@@ -56,14 +62,7 @@ export default function LeaderboardPage() {
   const availableTemplates = getAllTemplates();
 
   // Prepare data object with configuration properties
-  const leaderboardData = data ? {
-    ...data,
-    entries: entries || [],
-    maxEntries: 50,
-    showRank: true,
-    showScore: true,
-    showAvatar: true
-  } : null;
+  const leaderboardData = data || null;
 
   return (
     <div className="min-h-screen bg-background py-8">
