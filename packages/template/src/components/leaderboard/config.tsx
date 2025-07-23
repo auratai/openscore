@@ -1,12 +1,14 @@
 import { Leaderboard as gamingTemplate } from "./gaming";
 import { Leaderboard as compactTemplate } from "./compact";
 import { Leaderboard as defaultTemplate } from "./default";
+import type { ComponentType } from "react";
+import type { LeaderboardTemplateProps } from "../../types";
 
 export interface LeaderboardTemplateConfig {
   id: string;
   name: string;
   description: string;
-  component: React.ComponentType<any>;
+  component: ComponentType<LeaderboardTemplateProps>;
   maxWidth: string;
   visualStyle: 'clean' | 'compact' | 'gaming';
   bestFor: string[];

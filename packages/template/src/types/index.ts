@@ -12,7 +12,7 @@ export interface LeaderboardEntry {
 
 export interface LeaderboardColumn {
   name: string;
-  type: 'text' | 'number' | 'date' | 'boolean' | 'custom';
+  type: 'text' | 'number' | 'date' | 'boolean' | 'custom' | 'image';
   sortable?: boolean;
   required?: boolean;
   displayName?: string;
@@ -47,11 +47,3 @@ export interface ScoreboardEntry {
   avatar?: string;
   metadata?: Record<string, any>;
 }
-
-export interface ScoreboardTemplateProps extends BaseTemplateProps {
-  entries: ScoreboardEntry[];
-  title?: string;
-  maxEntries?: number;
-  showScore?: boolean;
-  showAvatar?: boolean;
-} 

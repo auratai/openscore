@@ -3,17 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@openscore/ui";
 import { Avatar } from "../../common/avatar";
 import { ScoreDisplay } from "../../common/score-display";
 import { RankBadge } from "../../common/rank-badge";
-import type { LeaderboardTemplateProps, LeaderboardEntry } from "../../../types";
-import { sortByScore, limitEntries, mergeClasses } from "../../../utils";
+import type { LeaderboardTemplateProps, LeaderboardEntry, LeaderboardColumn } from "../../../types";
+import { mergeClasses } from "../../../utils";
 
 export const Leaderboard: React.FC<LeaderboardTemplateProps> = ({
   data,
   className
 }) => {
-  const { entries = [], title = "Leaderboard", maxEntries, showRank = true, showScore = true, showAvatar = true } = data;
-  
-  const sortedEntries = sortByScore(entries);
-  const limitedEntries = limitEntries(sortedEntries, maxEntries);
+  const { entries = [], title = "Leaderboard", columns = [] } = data;
 
   return (
     <Card className={mergeClasses("w-full max-w-2xl", className)}>
@@ -22,17 +19,16 @@ export const Leaderboard: React.FC<LeaderboardTemplateProps> = ({
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {limitedEntries.map((entry, index) => (
+          {entries.map((entry, index) => (
             <LeaderboardEntry
               key={entry.id}
               entry={entry}
               index={index}
-              showRank={showRank}
-              showScore={showScore}
-              showAvatar={showAvatar}
+              columns={columns}
+              sortByColumn={data.sortByColumn}
             />
           ))}
-          {limitedEntries.length === 0 && (
+          {entries.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               No entries yet
             </div>
@@ -46,60 +42,63 @@ export const Leaderboard: React.FC<LeaderboardTemplateProps> = ({
 interface LeaderboardEntryProps {
   entry: LeaderboardEntry;
   index: number;
-  showRank: boolean;
-  showScore: boolean;
-  showAvatar: boolean;
+  columns: LeaderboardColumn[];
+  sortByColumn?: string;
 }
 
 const LeaderboardEntry: React.FC<LeaderboardEntryProps> = ({
   entry,
   index,
-  showRank,
-  showScore,
-  showAvatar
+  columns,
+  sortByColumn
 }) => {
   const isTopThree = index < 3;
+  
+  // Get rank from entry data (set by useLeaderboard hook)
+  const rank = entry.rank || index + 1;
+  
+  // Get the primary column (sortByColumn) for score display
+  const primaryColumn = columns.find(col => col.name === sortByColumn);
+  const score = primaryColumn ? entry[primaryColumn.name] : 0;
+  
+  // Find image column for avatar
+  const imageColumn = columns.find(col => col.type === 'image');
+  const avatar = imageColumn ? entry[imageColumn.name] : undefined;
   
   return (
     <div className={mergeClasses(
       "flex items-center gap-4 p-3 rounded-lg transition-colors",
       isTopThree ? "bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200" : "hover:bg-gray-50"
     )}>
-      {showRank && (
-        <div className="flex-shrink-0">
-          <RankBadge rank={entry.rank} size="sm" />
-        </div>
-      )}
+      <div className="flex-shrink-0">
+        <RankBadge rank={rank} size="sm" />
+      </div>
       
-      {showAvatar && (
-        <div className="flex-shrink-0">
-          <Avatar
-            src={entry.avatar}
-            alt={entry.name}
-            size="sm"
-            fallback={entry.name.charAt(0)}
-          />
-        </div>
-      )}
+      <div className="flex-shrink-0">
+        <Avatar
+          src={avatar}
+          alt={entry.id}
+          size="sm"
+          fallback={entry.id.charAt(0)}
+        />
+      </div>
       
       <div className="flex-1 min-w-0">
         <h3 className={mergeClasses(
           "font-medium truncate",
           isTopThree ? "text-blue-900" : "text-gray-900"
         )}>
-          {entry.name}
+          {entry.id}
         </h3>
       </div>
       
-      {showScore && (
-        <div className="flex-shrink-0">
-          <ScoreDisplay
-            score={entry.score}
-            size="sm"
-            variant={isTopThree ? "highlight" : "default"}
-          />
-        </div>
-      )}
+      <div className="flex-shrink-0">
+        <ScoreDisplay
+          score={typeof score === 'number' ? score : 0}
+          size="sm"
+          variant={isTopThree ? "highlight" : "default"}
+        />
+      </div>
     </div>
   );
 }; 

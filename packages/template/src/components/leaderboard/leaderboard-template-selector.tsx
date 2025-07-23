@@ -1,6 +1,6 @@
 import * as React from "react";
-import { LEADERBOARD_TEMPLATES, getTemplateById, type LeaderboardTemplateConfig } from "./config";
-import type { LeaderboardTemplateProps, LeaderboardData } from "../../types";
+import { LEADERBOARD_TEMPLATES, getTemplateById } from "./config";
+import type { LeaderboardData } from "../../types";
 
 interface LeaderboardTemplateSelectorProps {
   data: LeaderboardData | null;
@@ -8,7 +8,6 @@ interface LeaderboardTemplateSelectorProps {
   error?: string | null;
   templateType?: keyof typeof LEADERBOARD_TEMPLATES;
   className?: string;
-  children?: React.ReactNode;
 }
 
 export const LeaderboardTemplateSelector: React.FC<LeaderboardTemplateSelectorProps> = ({
@@ -16,8 +15,7 @@ export const LeaderboardTemplateSelector: React.FC<LeaderboardTemplateSelectorPr
   loading = false,
   error = null,
   templateType = 'default',
-  className,
-  children
+  className
 }) => {
   // Handle loading state
   if (loading) {
