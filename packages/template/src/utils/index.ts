@@ -34,4 +34,32 @@ export const sortByScore = <T extends { score: number }>(entries: T[]): T[] => {
 export const limitEntries = <T>(entries: T[], maxEntries?: number): T[] => {
   if (!maxEntries) return entries;
   return entries.slice(0, maxEntries);
+};
+
+// Utility function to format column values based on type
+export const formatColumnValue = (value: any, columnType: string): string => {
+  if (value === null || value === undefined) return '-';
+  
+  switch (columnType) {
+    case 'number':
+      return typeof value === 'number' ? value.toLocaleString() : String(value);
+    case 'date':
+      if (value instanceof Date) {
+        return value.toLocaleDateString();
+      }
+      if (typeof value === 'string') {
+        return new Date(value).toLocaleDateString();
+      }
+      return String(value);
+    case 'boolean':
+      return value ? 'Yes' : 'No';
+    case 'text':
+    default:
+      return String(value);
+  }
+};
+
+// Utility function to get column display name
+export const getColumnDisplayName = (column: { name: string; displayName?: string }): string => {
+  return column.displayName || column.name.charAt(0).toUpperCase() + column.name.slice(1);
 }; 
