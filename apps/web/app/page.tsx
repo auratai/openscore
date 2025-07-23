@@ -2,7 +2,7 @@ import { prisma } from "@repo/database";
 import { Button } from "@openscore/ui/components/button";   
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@openscore/ui/components/card";
 import { Input } from "@openscore/ui/components/input";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@openscore/ui/components/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@openscore/ui/components/dialog";
 
 
 export default async function IndexPage() {
@@ -89,7 +89,7 @@ export default async function IndexPage() {
 
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Database Users</h2>
-        <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
+        <pre className="bg-muted p-4 rounded text-sm overflow-auto">
           {JSON.stringify(users, null, 2)}
         </pre>
       </div>

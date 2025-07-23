@@ -9,10 +9,12 @@
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
-    "@openscore/ui": "workspace:*",
     "@openscore/template": "workspace:*",
+    "@openscore/ui": "workspace:*",
     "@repo/database": "workspace:*",
+    "lucide-react": "^0.294.0",
     "next": "^14.1.1",
+    "next-themes": "^0.4.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwindcss-animate": "^1.0.7"
