@@ -32,11 +32,11 @@ const getColumnDisplayName = (column: LeaderboardColumn) => {
 const getRankIcon = (rank: number) => {
   switch (rank) {
     case 1:
-      return <Trophy className="w-5 h-5 text-yellow-500" />
+      return <Trophy className="w-5 h-5 text-yellow-500 dark:text-yellow-400" />
     case 2:
-      return <Medal className="w-5 h-5 text-gray-400" />
+      return <Medal className="w-5 h-5 text-gray-400 dark:text-gray-300" />
     case 3:
-      return <Award className="w-5 h-5 text-amber-600" />
+      return <Award className="w-5 h-5 text-amber-600 dark:text-amber-400" />
     default:
       return null
   }
@@ -44,15 +44,15 @@ const getRankIcon = (rank: number) => {
 
 const getRankBadge = (rank: number) => {
   if (rank <= 3) {
-    const colors = {
-      1: "bg-gradient-to-r from-yellow-400 to-yellow-600 text-white",
-      2: "bg-gradient-to-r from-gray-300 to-gray-500 text-white",
-      3: "bg-gradient-to-r from-amber-400 to-amber-600 text-white",
+    const badgeClasses = {
+      1: "rank-badge-1",
+      2: "rank-badge-2", 
+      3: "rank-badge-3",
     }
-    return <Badge className={`${colors[rank as keyof typeof colors]} font-bold px-3 py-1`}>#{rank}</Badge>
+    return <Badge className={`${badgeClasses[rank as keyof typeof badgeClasses]} font-bold px-3 py-1`}>#{rank}</Badge>
   }
   return (
-    <Badge variant="outline" className="font-semibold px-3 py-1">
+    <Badge variant="outline" className="font-semibold px-3 py-1 border-border text-foreground">
       #{rank}
     </Badge>
   )
@@ -62,35 +62,35 @@ export const Leaderboard: React.FC<LeaderboardTemplateProps> = ({ data, classNam
   const { entries = [], title = "Leaderboard", columns = [], subheading, description } = data
 
   return (
-    <Card className={mergeClasses("w-full max-w-7xl mx-auto shadow-lg", className)}>
-      <CardHeader className="pb-6 text-center bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg">
+    <Card className={mergeClasses("w-full max-w-7xl mx-auto shadow-lg border-border", className)}>
+      <CardHeader className="pb-6 text-center bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 rounded-t-lg border-b border-border">
         <div className="flex items-center justify-center gap-2 mb-2">
-          <Trophy className="w-8 h-8 text-yellow-500" />
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <Trophy className="w-8 h-8 text-yellow-500 dark:text-yellow-400" />
+          <CardTitle className="text-3xl font-bold gradient-text">
             {title}
           </CardTitle>
         </div>
-        {subheading && <p className="text-lg text-gray-600 font-medium">{subheading}</p>}
-        {description && <p className="text-sm text-gray-500 mt-1">{description}</p>}
+        {subheading && <p className="text-lg text-muted-foreground font-medium">{subheading}</p>}
+        {description && <p className="text-sm text-muted-foreground/80 mt-1">{description}</p>}
       </CardHeader>
 
       <CardContent className="p-0">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-gradient-to-r from-gray-50 to-slate-50 border-b-2 border-gray-200">
-                <TableHead className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider w-24">
+              <TableRow className="bg-gradient-to-r from-muted/50 to-muted/30 dark:from-muted/30 dark:to-muted/20 border-b-2 border-border">
+                <TableHead className="px-6 py-4 text-left text-sm font-bold text-foreground uppercase tracking-wider w-24">
                   Rank
                 </TableHead>
-                {columns.map((column) => (
+                {columns.filter(column => column.name !== 'u_rank').map((column) => (
                   <TableHead
                     key={column.name}
-                    className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider"
+                    className="px-6 py-4 text-left text-sm font-bold text-foreground uppercase tracking-wider"
                   >
                     <div className="flex items-center gap-2">
-                      {column.name === "score" && <Target className="w-4 h-4" />}
-                      {column.name === "country" && <MapPin className="w-4 h-4" />}
-                      {column.name === "joinDate" && <Calendar className="w-4 h-4" />}
+                      {column.name === "score" && <Target className="w-4 h-4 text-muted-foreground" />}
+                      {column.name === "country" && <MapPin className="w-4 h-4 text-muted-foreground" />}
+                      {column.name === "joinDate" && <Calendar className="w-4 h-4 text-muted-foreground" />}
                       {getColumnDisplayName(column)}
                     </div>
                   </TableHead>
@@ -98,7 +98,7 @@ export const Leaderboard: React.FC<LeaderboardTemplateProps> = ({ data, classNam
               </TableRow>
             </TableHeader>
 
-            <TableBody className="divide-y divide-gray-100">
+            <TableBody className="divide-y divide-border">
               {entries.map((entry, index) => (
                 <LeaderboardEntryComponent
                   key={entry.id}
@@ -111,12 +111,12 @@ export const Leaderboard: React.FC<LeaderboardTemplateProps> = ({ data, classNam
 
               {entries.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={columns.length + 1} className="text-center py-16 bg-gray-50">
+                  <TableCell colSpan={columns.length + 1} className="text-center py-16 bg-muted/20">
                     <div className="flex flex-col items-center gap-4">
                       <div className="text-6xl">🏆</div>
                       <div>
-                        <p className="text-xl font-semibold text-gray-600 mb-2">No entries yet</p>
-                        <p className="text-gray-500">Be the first to join the leaderboard!</p>
+                        <p className="text-xl font-semibold text-muted-foreground mb-2">No entries yet</p>
+                        <p className="text-muted-foreground/70">Be the first to join the leaderboard!</p>
                       </div>
                     </div>
                   </TableCell>
@@ -146,13 +146,13 @@ const LeaderboardEntryComponent: React.FC<LeaderboardEntryProps> = ({ entry, ind
 
     switch (rank) {
       case 1:
-        return `${baseStyles} bg-gradient-to-r from-yellow-50 via-amber-50 to-yellow-50 border-l-4 border-yellow-400 hover:from-yellow-100 hover:to-amber-100`
+        return `${baseStyles} row-gradient-1 hover:from-yellow-100 hover:via-amber-100 hover:to-yellow-100 dark:hover:from-yellow-900/20 dark:hover:via-amber-900/20 dark:hover:to-yellow-900/20`
       case 2:
-        return `${baseStyles} bg-gradient-to-r from-gray-50 via-slate-50 to-gray-50 border-l-4 border-gray-400 hover:from-gray-100 hover:to-slate-100`
+        return `${baseStyles} row-gradient-2 hover:from-gray-100 hover:via-slate-100 hover:to-gray-100 dark:hover:from-gray-800/20 dark:hover:via-slate-800/20 dark:hover:to-gray-800/20`
       case 3:
-        return `${baseStyles} bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border-l-4 border-amber-500 hover:from-amber-100 hover:to-orange-100`
+        return `${baseStyles} row-gradient-3 hover:from-amber-100 hover:via-orange-100 hover:to-amber-100 dark:hover:from-amber-900/20 dark:hover:via-orange-900/20 dark:hover:to-amber-900/20`
       default:
-        return `${baseStyles} hover:bg-blue-50 border-l-4 border-transparent hover:border-blue-200`
+        return `${baseStyles} hover:bg-accent/50 border-l-4 border-transparent hover:border-accent-foreground/20`
     }
   }
 
@@ -167,7 +167,7 @@ const LeaderboardEntryComponent: React.FC<LeaderboardEntryProps> = ({ entry, ind
       </TableCell>
 
       {/* Dynamic Columns */}
-      {columns.map((column) => {
+      {columns.filter(column => column.name !== 'u_rank').map((column) => {
         let value = entry[column.name]
 
         // Try different ways to access the data
@@ -186,12 +186,12 @@ const LeaderboardEntryComponent: React.FC<LeaderboardEntryProps> = ({ entry, ind
             key={column.name}
             className={mergeClasses(
               "px-6 py-5 text-sm",
-              isHighlighted ? "font-bold text-gray-900" : "text-gray-700",
-              column.name === "name" ? "font-semibold text-base" : "",
+              isHighlighted ? "font-bold text-foreground" : "text-muted-foreground",
+              column.name === "name" ? "font-semibold text-base text-foreground" : "",
             )}
           >
             <div className="flex items-center gap-2">
-              {column.name === "score" && isTopThree && <div className="w-2 h-2 rounded-full bg-green-400"></div>}
+              {column.name === "score" && isTopThree && <div className="w-2 h-2 rounded-full bg-green-400 dark:bg-green-500"></div>}
               {formatColumnValue(value, column.type)}
             </div>
           </TableCell>
