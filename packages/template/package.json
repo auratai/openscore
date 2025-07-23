@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@openscore/ui": "workspace:*",
+    "@tanstack/react-table": "^8.21.3",
     "lucide-react": "^0.294.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"

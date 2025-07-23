@@ -67,7 +67,7 @@ export default function LeaderboardPage() {
   return (
     <div className="min-h-screen bg-background py-8">
 
-        {/* Template Type Selector */}
+        {/* Template Type Selector
         <div className="flex justify-center mb-6">
           <div className="bg-card rounded-lg shadow-sm border p-4">
             <label htmlFor="template-select" className="block text-sm font-medium text-foreground mb-2">
@@ -86,11 +86,11 @@ export default function LeaderboardPage() {
               ))}
             </select>
             {/* Template description */}
-            <div className="mt-2 text-xs text-muted-foreground max-w-xs">
+            {/* <div className="mt-2 text-xs text-muted-foreground max-w-xs">
               {LEADERBOARD_TEMPLATES[selectedTemplateType]?.description}
             </div>
-          </div>
-        </div>
+          </div> */}
+        {/* </div>  */}
 
         {/* Leaderboard Content */}
         <div className="flex justify-center">
