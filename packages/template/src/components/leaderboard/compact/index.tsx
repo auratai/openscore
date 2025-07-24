@@ -3,6 +3,7 @@ import { DataTable } from "@openscore/ui"
 import { Badge } from "@openscore/ui"
 import { Trophy, Medal, Award, Calendar, MapPin, Target } from "lucide-react"
 import type { LeaderboardTemplateProps, LeaderboardEntry, LeaderboardColumn } from "../../../types"
+import { TopThree } from "./topThree"
 
 // Utility functions
 const mergeClasses = (...classes: (string | undefined)[]) => {
@@ -124,16 +125,7 @@ export const Leaderboard: React.FC<LeaderboardTemplateProps> = ({ data, classNam
   return (
     <div className={mergeClasses("w-full max-w-7xl mx-auto", className)}>
       {/* Header */}
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <Trophy className="w-8 h-8 text-yellow-500 dark:text-yellow-400" />
-          <h1 className="text-3xl font-bold gradient-text">
-            {title}
-          </h1>
-        </div>
-        {subheading && <p className="text-lg text-muted-foreground font-medium">{subheading}</p>}
-        {description && <p className="text-sm text-muted-foreground/80 mt-1">{description}</p>}
-      </div>
+      <TopThree data={data} />
 
       {/* Data Table */}
       <DataTable
