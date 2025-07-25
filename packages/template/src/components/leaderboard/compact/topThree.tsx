@@ -94,15 +94,7 @@ export function TopThree({ data }: TopThreeProps) {
       </div>
       
       {/* Top Players Cards */}
-      <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
-        {topThree.map((player, index) => (
-          <PlayerCard 
-            key={index}
-            player={player}
-            index={index}
-          />
-        ))}
-      </div>
+
     </div>
   );
 }
@@ -134,72 +126,4 @@ function LeaderboardHeader({ title, subheading }: { title: string; subheading?: 
 }
 
 // Player Card Component
-function PlayerCard({ player, index }: { player: any; index: number }) {
-  const rankColors = [
-    "bg-gradient-to-br from-yellow-300 to-yellow-600", // 1st place
-    "bg-gradient-to-br from-gray-300 to-gray-500",     // 2nd place
-    "bg-gradient-to-br from-amber-400 to-amber-700"    // 3rd place
-  ];
-  
-  const rankIcons = [
-    <Trophy key="trophy" className="w-5 h-5" />,
-    <Medal key="medal" className="w-5 h-5" />,
-    <Award key="award" className="w-5 h-5" />
-  ];
 
-  return (
-    <div className="overflow-hidden border border-border rounded-lg bg-card shadow-sm hover:shadow-md transition-shadow">
-      <div className="relative">
-        {/* Rank Badge */}
-        <div className={cn(
-          "absolute top-3 right-3 flex items-center justify-center rounded-full w-8 h-8 text-white",
-          rankColors[index]
-        )}>
-          {rankIcons[index]}
-        </div>
-        
-        <div className="p-6 flex items-center gap-4">
-          {/* Avatar */}
-          <div className="relative">
-            <div className="h-16 w-16 rounded-full border-2 border-border overflow-hidden bg-muted">
-              <img 
-                src={player.image} 
-                alt={player.name}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  target.nextElementSibling?.classList.remove('hidden');
-                }}
-              />
-              <div className="hidden w-full h-full bg-muted flex items-center justify-center text-sm font-medium text-muted-foreground">
-                {player.name.split(' ').map((n: string) => n[0]).join('').toUpperCase()}
-              </div>
-            </div>
-            <div className={cn(
-              "absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white",
-              rankColors[index]
-            )}>
-              {player.rank}
-            </div>
-          </div>
-          
-          {/* Player Info */}
-          <div>
-            <h3 className="font-semibold text-lg text-foreground">{player.name}</h3>
-            <div className="flex items-center mt-1">
-              <span className="text-sm text-muted-foreground">{player.sortByColumnDisplayName}:</span>
-              <span className="ml-2 font-bold text-foreground">{player.value}</span>
-            </div>
-          </div>
-        </div>
-        
-        {/* Decorative bottom line */}
-        <div className={cn(
-          "h-1",
-          rankColors[index]
-        )} />
-      </div>
-    </div>
-  );
-}

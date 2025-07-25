@@ -41,17 +41,49 @@ const Steps = ({ data }: { data: any[] }) => {
   return (
     <div className="flex items-center justify-center p-8 relative">
       <svg width="600" height="300" viewBox="0 0 600 300">
-        {lines.map((line, index) => (
-          <line
-            key={index}
-            x1={line[0]}
-            y1={line[1]}
-            x2={line[2]}
-            y2={line[3]}
-            stroke="currentColor"
-            strokeWidth="4"
-          />
-        ))}
+        {lines.map((line, index) => {
+          // Calculate opacity based on y position - higher y means lower opacity
+          const avgY = (line[1] + line[3]) / 2;
+          const maxY = 300; // SVG height
+          const opacity = Math.max(0.3, 1 - (avgY / maxY) * 0.7); // Opacity from 1.0 to 0.3
+          
+          return (
+            <g key={index}>
+              {/* Glow effect */}
+              <line
+                x1={line[0]}
+                y1={line[1]}
+                x2={line[2]}
+                y2={line[3]}
+                stroke="#00ff00"
+                strokeWidth="8"
+                opacity={opacity * 0.3}
+                filter="blur(3px)"
+              />
+              {/* Main neon line */}
+              <line
+                x1={line[0]}
+                y1={line[1]}
+                x2={line[2]}
+                y2={line[3]}
+                stroke="#00ff00"
+                strokeWidth="2"
+                opacity={opacity}
+                filter="drop-shadow(0 0 6px #00ff00)"
+              />
+              {/* Highlight line */}
+              <line
+                x1={line[0]}
+                y1={line[1]}
+                x2={line[2]}
+                y2={line[3]}
+                stroke="#7fff7f"
+                strokeWidth="1"
+                opacity={opacity * 0.8}
+              />
+            </g>
+          );
+        })}
         
         {/* Data Overlays */}
         {data.map((entry, index) => {
@@ -81,8 +113,11 @@ const Steps = ({ data }: { data: any[] }) => {
                   y={imagePosition.y - 50}
                   width="60"
                   height="60"
-                  className=""
-                  
+                  className="rounded-lg object-cover"
+                  style={{
+                    borderRadius: '8px',
+                    objectFit: 'cover'
+                  }}
                 />
               )}
               
